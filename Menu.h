@@ -4,9 +4,11 @@
 #include "PuzzleState.h"
 #include <iostream>
 
+int PUZZLE_SIZE = 3;
+
 class Menu{
    public:
-      enum SearchTypes{UNIFORM_COST_SEARCH=1,A_STAR_MANHATTAN_DISTANCE=3,A_STAR_MISPLACED_TILE=2};
+      enum SearchAlgorithm{UNIFORM_COST_SEARCH=1,A_STAR_MANHATTAN_DISTANCE=3,A_STAR_MISPLACED_TILE=2};
 
       // Constructor 
       Menu() {}
@@ -16,7 +18,7 @@ class Menu{
       void PromptForExit();
 
       // Getters
-      SearchTypes SearchAlgorithmSelected(){ return searchType; }
+      SearchAlgorithm SearchAlgorithmSelected(){ return searchType; }
       PuzzleState *GetPuzzle(){ return puzzle; }
       bool ExitSelected(){ return exit; }
       // Helper Functions TODO: make private
@@ -24,12 +26,12 @@ class Menu{
       void GetSearchAlgorithmInput();
    private:
       // Variables
-      SearchTypes searchType{UNIFORM_COST_SEARCH};
+      SearchAlgorithm searchType{UNIFORM_COST_SEARCH};
       PuzzleState *puzzle{NULL};
       bool exit{0};
       int defaultValues[9] = {1,2,3,4,8,0,7,6,5};
-      int userInputValues[9];
-      int puzzleSize{3}; // 3x3
+      int *userInputValues;
+      int puzzleSize{PUZZLE_SIZE}; // 3x3
 };
 
 Menu::~Menu(){
@@ -60,6 +62,7 @@ void Menu::GetPuzzleInput(){
    std::cout<<"Type \"1\" to use a default puzzle, or \"2\" to enter your own puzzle."<<std::endl; 
    std::cout<<std::endl; 
    std::cin>>input_type;
+   userInputValues = new int[puzzleSize*puzzleSize];
    if(input_type == 2){ // User enters puzzle
       int tmp_count=0;
       std::cout<<"Enter your puzzle, use a zero to represent the blank"<<std::endl; 
@@ -84,7 +87,7 @@ void Menu::GetSearchAlgorithmInput(){
    std::cout<<"3. A* with the Manhattan distance heuristic"<<std::endl; 
    do{
       std::cin>>tmp_int;
-      searchType=(SearchTypes)tmp_int;
+      searchType=(SearchAlgorithm)tmp_int;
       if(tmp_int<1 || tmp_int>3){
          std::cout<<"Selection Not Valid!"<<std::endl; 
       }

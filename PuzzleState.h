@@ -1,6 +1,8 @@
 #ifndef _PUZZLE_STATE_H
 #define _PUZZLE_STATE_H
 
+#define SWAP(A,B) A=A^B,B=A^B,A=A^B
+
 #include <cmath>
 #include <iostream>
 
@@ -16,19 +18,28 @@ class PuzzleState{
       void SetG(int _g){ g = _g; }
       void SetH(int _h){ h = _h; }
       // Getters
+      int GetValue(int x,int y);
       int GetG(){ return g; }
-      int GetF(){ return g+h; }
+      int GetH(){ return h; }
+      int GetF() const { return g+h; }
+      int GetSize(){ return puzzleSize; }
+
+      bool IsGoalState();
+   
+      // Directions: 0 Up, 1 Down, 2 Left, 3 Right 
+      PuzzleState *Expand(int direction);
 
       void Print();
       
    private:
+      int zeroLocation[2];
       int **puzzleData;
       int puzzleSize;
-      int g{0};
+      int g{-1};
       int h{0};
 };
 
-// Constructor
+/* Constructor */
 PuzzleState::PuzzleState(int* values, int size):
    puzzleSize(size) 
 {
@@ -42,13 +53,17 @@ PuzzleState::PuzzleState(int* values, int size):
    for(int y=0;y<puzzleSize;++y){
       for(int x=0;x<puzzleSize;++x){
          puzzleData[y][x] = values[i];
+         if(values[i] == 0){
+            zeroLocation[0] = y;
+            zeroLocation[1] = x;
+         }
          i++;
       }
    }
 }
 
+/* Copy Constructor */
 PuzzleState::PuzzleState(const PuzzleState &obj){
-   std::cout<<"Copy Constructor!"<<std::endl;
    // Coppy over values
    g = obj.g;
    h = obj.h;
@@ -64,6 +79,8 @@ PuzzleState::PuzzleState(const PuzzleState &obj){
          puzzleData[y][x] = obj.puzzleData[y][x];
       }
    }
+   zeroLocation[0] = obj.zeroLocation[0];
+   zeroLocation[1] = obj.zeroLocation[1];
 }
 
 PuzzleState::~PuzzleState(){
@@ -75,7 +92,6 @@ PuzzleState::~PuzzleState(){
 }
 
 PuzzleState &PuzzleState::operator=(const PuzzleState &obj){
-   std::cout<<"= Overload!"<<std::endl;
    // Coppy over values
    g = obj.g;
    h = obj.h;
@@ -93,6 +109,71 @@ PuzzleState &PuzzleState::operator=(const PuzzleState &obj){
    }
 }
 
+PuzzleState *PuzzleState::Expand(int direction){
+   PuzzleState *new_state = new PuzzleState(*this);
+   int y = zeroLocation[0/*y*/];
+   int x = zeroLocation[1/*x*/];
+   switch(direction){
+      case 0: //EXPAND_UP
+         if(y == 0){
+            delete new_state;
+            return NULL;
+         }else{
+            SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y-1][x]);
+            new_state->zeroLocation[0] -= 1;
+            return new_state;
+         }
+         break;
+      case 1: //EXPAND_DOWN
+         if(y == puzzleSize-1){
+            delete new_state;
+            return NULL;
+         }else{
+            SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y+1][x]);
+            new_state->zeroLocation[0] += 1;
+            return new_state;
+         }
+         break;
+      case 2: //EXPAND_LEFT
+         if(x == 0){
+            delete new_state;
+            return NULL;
+         }else{
+            SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y][x-1]);
+            new_state->zeroLocation[1] -= 1;
+            return new_state;
+         }
+         break;
+      case 3: //EXPAND_RIGHT
+         if(x == puzzleSize-1){
+            delete new_state;
+            return NULL;
+         }else{
+            SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y][x+1]);
+            new_state->zeroLocation[1] += 1;
+            return new_state;
+         }
+         break;
+      default:
+         delete new_state;
+         return NULL;
+   };
+}
+
+bool PuzzleState::IsGoalState(){
+   int i=1;
+   for(int y=0;y<puzzleSize;++y){
+      for(int x=0;x<puzzleSize;++x){
+         if(x == puzzleSize-1 && y == puzzleSize-1){
+            return true;
+         }else if(puzzleData[y][x] != i){
+            return false; 
+         }
+         i++;
+      }
+   }
+}
+
 void PuzzleState::Print(){
    for(int y=0;y<puzzleSize;++y){
       for(int x=0;x<puzzleSize;++x){
@@ -104,6 +185,23 @@ void PuzzleState::Print(){
       }
       std::cout<<std::endl;
    }
+}
+
+/* Get puzzle value, out of bounds returns -1 */
+int PuzzleState::GetValue(int x,int y){
+   if(x>=puzzleSize || y>=puzzleSize){
+      return -1;
+   }
+   return puzzleData[y][x];
+}
+
+/* Set puzzle value, out of bound returns false */
+bool PuzzleState::SetValue(int x,int y,int data){
+   if(x>=puzzleSize || y>=puzzleSize){
+      return false;
+   }
+   puzzleData[y][x] = data;
+   return true;
 }
 
 #endif

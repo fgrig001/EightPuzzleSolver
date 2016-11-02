@@ -1,32 +1,29 @@
-#include "AStarManhattanDistance.h"
-#include "AStarMisplacedTile.h"
 #include "Menu.h"
-#include "Puzzle.h"
-#include "UniformCostSearch.h"
+#include "PuzzleState.h"
+#include "PuzzleSolver.h"
 
 #include <iostream>
 using namespace std;
 
+
 int main(int argc, char *argv[]){
+   PUZZLE_SIZE = 3;
    // Object Declarations
    Menu menu;
-   Puzzle puzzle;
-   UniformCostSearch uniformCostSearch;
-   AStarManhattanDistance aStarManhattanDistance;
-   AStarMisplacedTile aStarMisplacedTile;
+   PuzzleSolver puzzleSolver;
 
    // Menu loop
    do{
       menu.GetUserInput();
       switch(menu.SearchAlgorithmSelected()){
-         case SearchAlgorithm::UNIFORM_COST_SEARCH:
-            uniformCostSearch.Run(menu.GetPuzzle());
+         case Menu::UNIFORM_COST_SEARCH:
+            puzzleSolver.RunUniformCostSearch(menu.GetPuzzle());
             break;
-         case SearchAlgorithm::A_STAR_MANHATTAN_DISTANCE:
-            aStarManhattanDistance.Run(menu.GetPuzzle());
+         case Menu::A_STAR_MANHATTAN_DISTANCE:
+            puzzleSolver.RunManhattanDistance(menu.GetPuzzle());
             break;
-         case SearchAlgorithm::A_STAR_MISPLACED_TILE:
-            aStarMisplacedTile.Run(menu.GetPuzzle());
+         case Menu::A_STAR_MISPLACED_TILE:
+            puzzleSolver.RunMisplacedTile(menu.GetPuzzle());
             break;
          default:
             break;
