@@ -29,7 +29,7 @@ class Menu{
       SearchAlgorithm searchType{UNIFORM_COST_SEARCH};
       PuzzleState *puzzle{NULL};
       bool exit{0};
-      int defaultValues[9] = {1,2,3,4,8,0,7,6,5};
+      int defaultValues[9] = {0,1,2,4,5,3,7,8,6};
       int *userInputValues;
       int puzzleSize{PUZZLE_SIZE}; // 3x3
 };
@@ -50,6 +50,7 @@ void Menu::PromptForExit(){
       delete puzzle;
       puzzle = NULL;
    }
+   std::cout<<std::endl;
    std::cout<<"Type \"1\" to run solver again, or \"2\" to exit."<<std::endl; 
    int _temp;
    std::cin>>_temp;
@@ -58,9 +59,9 @@ void Menu::PromptForExit(){
 
 void Menu::GetPuzzleInput(){
    int input_type;
+   std::cout<<std::endl;
    std::cout<<"Welcome to Freerick grigsbys 8-puzzle solver."<<std::endl; 
    std::cout<<"Type \"1\" to use a default puzzle, or \"2\" to enter your own puzzle."<<std::endl; 
-   std::cout<<std::endl; 
    std::cin>>input_type;
    userInputValues = new int[puzzleSize*puzzleSize];
    if(input_type == 2){ // User enters puzzle
@@ -81,6 +82,7 @@ void Menu::GetPuzzleInput(){
 
 void Menu::GetSearchAlgorithmInput(){
    int tmp_int;
+   std::cout<<std::endl;
    std::cout<<"Enter your choice of algorithm"<<std::endl; 
    std::cout<<"1. Uniform Cost Search"<<std::endl; 
    std::cout<<"2. A* with the Misplaced Tile heuristic"<<std::endl; 

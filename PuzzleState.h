@@ -37,6 +37,7 @@ class PuzzleState{
       int puzzleSize;
       int g{-1};
       int h{0};
+      int parentDirection{-1};
 };
 
 /* Constructor */
@@ -92,7 +93,7 @@ PuzzleState::~PuzzleState(){
 }
 
 PuzzleState &PuzzleState::operator=(const PuzzleState &obj){
-   // Coppy over values
+   // Copy over values
    g = obj.g;
    h = obj.h;
    puzzleSize = obj.puzzleSize;
@@ -113,44 +114,49 @@ PuzzleState *PuzzleState::Expand(int direction){
    PuzzleState *new_state = new PuzzleState(*this);
    int y = zeroLocation[0/*y*/];
    int x = zeroLocation[1/*x*/];
+   new_state->parentDirection;
    switch(direction){
       case 0: //EXPAND_UP
-         if(y == 0){
+         if(y == 0 || parentDirection == 0){
             delete new_state;
             return NULL;
          }else{
             SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y-1][x]);
             new_state->zeroLocation[0] -= 1;
+            new_state->parentDirection = 1;
             return new_state;
          }
          break;
       case 1: //EXPAND_DOWN
-         if(y == puzzleSize-1){
+         if(y == puzzleSize-1 || parentDirection == 1){
             delete new_state;
             return NULL;
          }else{
             SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y+1][x]);
             new_state->zeroLocation[0] += 1;
+            new_state->parentDirection = 0;
             return new_state;
          }
          break;
       case 2: //EXPAND_LEFT
-         if(x == 0){
+         if(x == 0 || parentDirection == 2){
             delete new_state;
             return NULL;
          }else{
             SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y][x-1]);
             new_state->zeroLocation[1] -= 1;
+            new_state->parentDirection = 3;
             return new_state;
          }
          break;
       case 3: //EXPAND_RIGHT
-         if(x == puzzleSize-1){
+         if(x == puzzleSize-1 || parentDirection == 3){
             delete new_state;
             return NULL;
          }else{
             SWAP(new_state->puzzleData[y][x],new_state->puzzleData[y][x+1]);
             new_state->zeroLocation[1] += 1;
+            new_state->parentDirection = 2;
             return new_state;
          }
          break;

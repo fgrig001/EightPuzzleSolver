@@ -8,30 +8,31 @@
 
 class PuzzleSolver{
    public:
+      // Constructor / Destructor
       PuzzleSolver(){}
       ~PuzzleSolver(){}
+      // Puzzle Solving Algorithms
       void RunManhattanDistance(PuzzleState *puzzle);
       void RunMisplacedTile(PuzzleState *puzzle);
       void RunUniformCostSearch(PuzzleState *puzzle);
    private:
+      // Heuristic types
       enum Heuristic{UNIFORM_COST,MISPLACED_TILE,MANHATTAN_DISTANCE};
       // Comparitor class
       struct ComparePuzzle{
          bool operator()(const PuzzleState *lhs,const PuzzleState *rhs) {
-            // return "true" if "p1" is ordered before "p2", for example:
-            int l = lhs->GetF();
-            int r = rhs->GetF(); 
-            return l > r;
+            return lhs->GetF() > rhs->GetF();
          }
       };
       // Helper functions
-      void Expand(PuzzleState *node);
       void Run(PuzzleState *puzzle,Heuristic heuristic);
       void EstimateCost(PuzzleState *puzzle,Heuristic heuristic);
       // Data Structures
       std::priority_queue<PuzzleState*, std::vector<PuzzleState*>, ComparePuzzle> nodes;
       // Variables 
-      int CurrentBest;
+      int currentBest;
+      int numberNodesExpanded{0};
+      int maxStoredStates{0};
 };
 
 void PuzzleSolver::EstimateCost(PuzzleState *puzzle,Heuristic heuristic){
@@ -65,11 +66,11 @@ void PuzzleSolver::EstimateCost(PuzzleState *puzzle,Heuristic heuristic){
                   // Get actual location of value 
                   actual_y = 0;
                   actual_x = 0;
-                  while(cur_val >= size){
+                  while(cur_val > size){
                      actual_y++;
                      cur_val -= size;
                   }
-                  actual_x = cur_val;
+                  actual_x = cur_val-1;
                   // calculate distance
                   new_h += abs(x - actual_x) + abs(y - actual_y);
                }
@@ -85,27 +86,42 @@ void PuzzleSolver::EstimateCost(PuzzleState *puzzle,Heuristic heuristic){
 }
 
 void PuzzleSolver::Run(PuzzleState *puzzle,Heuristic heuristic){
+   numberNodesExpanded=0;
+   maxStoredStates=0;
    EstimateCost(puzzle,heuristic);
    nodes.push(puzzle);
    PuzzleState *current_node;
    while(1){
       current_node = nodes.top();
       nodes.pop();
+      // Check for diamater (No solution)
+      if(current_node->GetG() > 31){
+         std::cout<<"This problem has no solution!\n";
+         break;
+      }
+      // Check for goal state
       if(current_node->IsGoalState()){
          std::cout<<"Goal State Reached!!\n";
          current_node->Print();
-         // TODO: Print results
+         std::cout<<"Solved in "<<current_node->GetG()<<" steps!\n";
+         std::cout<<"Number of nodes expanded: "<<numberNodesExpanded<<std::endl;
+         std::cout<<"Max size of queue: "<<maxStoredStates<<std::endl;
+         // empty queue
+         while(!nodes.empty()){
+            nodes.pop();
+         }
          return;
       }else{
-         // TODO: Print results
+         // If not initial state
          if(current_node->GetG() != 0){
             std::cout<<"The best state to expand with a g(n) = "<<current_node->GetG()
                      <<" and h(n) = "<<current_node->GetH()<<std::endl;
          }else{
             std::cout<<"Expanding Node\n";
          }
+         numberNodesExpanded++;
          current_node->Print();
-         // Expand new statte 
+         // Expand new state 
          PuzzleState *new_state;
          for(int i=0;i<4;++i){
             new_state = current_node->Expand(i);
@@ -114,13 +130,12 @@ void PuzzleSolver::Run(PuzzleState *puzzle,Heuristic heuristic){
                nodes.push(new_state);
             }
          }
-         delete current_node;
+         // Save max size of queue
+         int temp = nodes.size();
+         if(temp>maxStoredStates){ maxStoredStates=temp; }
       }
    }  
 
-}
-
-void PuzzleSolver::Expand(PuzzleState *node){
 }
 
 void PuzzleSolver::RunUniformCostSearch(PuzzleState *puzzle){
