@@ -1,4 +1,4 @@
-The Eight Puzzle
+#The Eight Puzzle
 
 An analysis of three solutions using C++
 
@@ -37,133 +37,153 @@ After a good deal of testing I realized that my program would not be able to fin
 I ran my solver on multiple puzzles, recording the number of nodes expanded (as a metric for time complexity) as well as the maximum queue size (as a metric for space complexity). 
 
 <table>
-  <tr>
-    <td>
-
-2 step solution 
-</td>
-    <td>
-Algorithm 
-Nodes Expanded
-Max Queue Size
-Uniform Cost
-3
-4
-A* w/ Misplaced Tile
-2
-3
-A* w/ Manhattan Distance
-2
-3
-</td>
-  </tr>
-  <tr>
-    <td>
-
-4 step solution </td>
-    <td>
-Algorithm 
-Nodes Expanded
-Max Queue Size
-Uniform Cost
-28
-18
-A* w/ Misplaced Tile
-4
-4
-A* w/ Manhattan Distance
-4
-4
-
-</td>
-  </tr>
-  <tr>
-    <td>
-
-11 step solution </td>
-    <td>
-Algorithm 
-Nodes Expanded
-Max Queue Size
-Uniform Cost
-1739
-1158
-A* w/ Misplaced Tile
-60
-47
-A* w/ Manhattan Distance
-17
-17
-</td>
-  </tr>
-  <tr>
-    <td>
-
-15 step solution 
-</td>
-    <td>
-Algorithm 
-Nodes Expanded
-Max Queue Size
-Uniform Cost
-13214
-9168
-A* w/ Misplaced Tile
-352
-259
-A* w/ Manhattan Distance
-52
-39
-</td>
-  </tr>
-  <tr>
-    <td>
-
-22 step solution 
-</td>
-    <td>
-Algorithm 
-Nodes Expanded
-Max Queue Size
-Uniform Cost
-580368
-455874
-A* w/ Misplaced Tile
-11123
-8116
-A* w/ Manhattan Distance
-370
-255
-</td>
-  </tr>
-  <tr>
-    <td>
-
-27 step solution 
-</td>
-    <td>
-Algorithm 
-Nodes Expanded
-Max Queue Size
-Uniform Cost
-7382676
-5596218
-A* w/ Misplaced Tile
-161113
-117753
-A* w/ Manhattan Distance
-8434
-5636
-</td>
-  </tr>
-</table>
-
-
-<table>
-  <tr>
-    <td></td>
-    <td></td>
-  </tr>
+   <tr>
+      <td>
+         2 step solution 
+      </td>
+      <td>
+         <table>
+            <tr>
+               <td>
+               Algorithm 
+               </td>
+               <td>
+               Nodes Expanded
+               </td>
+               <td>
+               Max Queue Size
+               </td>
+            </tr>
+            <tr>
+               <td>
+               Uniform Cost
+               </td>
+               <td>
+               3
+               </td>
+               <td>
+               4
+               </td>
+            </tr>
+            <tr>
+               <td>
+               A* w/ Misplaced Tile
+               </td>
+               <td>
+               2
+               </td>
+               <td>
+               3
+               </td>
+            </tr>
+            <tr>
+               <td>
+               A* w/ Manhattan Distance
+               </td>
+               <td>
+               2
+               </td>
+               <td>
+               3
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+   <tr>
+      <td>
+         4 step solution 
+      </td>
+      <td>
+         Algorithm 
+         Nodes Expanded
+         Max Queue Size
+         Uniform Cost
+         28
+         18
+         A* w/ Misplaced Tile
+         4
+         4
+         A* w/ Manhattan Distance
+         4
+         4
+      </td>
+   </tr>
+   <tr>
+      <td>
+         11 step solution </td>
+      <td>
+         Algorithm 
+         Nodes Expanded
+         Max Queue Size
+         Uniform Cost
+         1739
+         1158
+         A* w/ Misplaced Tile
+         60
+         47
+         A* w/ Manhattan Distance
+         17
+         17
+      </td>
+   </tr>
+   <tr>
+      <td>
+         15 step solution 
+      </td>
+      <td>
+         Algorithm 
+         Nodes Expanded
+         Max Queue Size
+         Uniform Cost
+         13214
+         9168
+         A* w/ Misplaced Tile
+         352
+         259
+         A* w/ Manhattan Distance
+         52
+         39
+      </td>
+   </tr>
+   <tr>
+      <td>
+         22 step solution 
+      </td>
+      <td>
+         Algorithm 
+         Nodes Expanded
+         Max Queue Size
+         Uniform Cost
+         580368
+         455874
+         A* w/ Misplaced Tile
+         11123
+         8116
+         A* w/ Manhattan Distance
+         370
+         255
+      </td>
+   </tr>
+   <tr>
+      <td>
+         27 step solution 
+      </td>
+      <td>
+         Algorithm 
+         Nodes Expanded
+         Max Queue Size
+         Uniform Cost
+         7382676
+         5596218
+         A* w/ Misplaced Tile
+         161113
+         117753
+         A* w/ Manhattan Distance
+         8434
+         5636
+      </td>
+   </tr>
 </table>
 
 
@@ -232,218 +252,4 @@ Max size of queue: 5
 Type "1" to run solver again, or "2" to exit.
 
 2
-
-## Code Printout 
-
-### Main.cpp
-
-int main(int argc, char *argv[]){
-
-   PUZZLE_SIZE = 3;
-
-   // Object Declarations
-
-   Menu menu;
-
-   PuzzleSolver puzzleSolver;
-
-   // Menu loop
-
-   do{
-
-  	menu.GetUserInput();
-
-  	switch(menu.SearchAlgorithmSelected()){
-
-     		case Menu::UNIFORM_COST_SEARCH:
-
-        			puzzleSolver.RunUniformCostSearch(menu.GetPuzzle());
-
-        			break;
-
-     		case Menu::A_STAR_MANHATTAN_DISTANCE:
-
-        			puzzleSolver.RunManhattanDistance(menu.GetPuzzle());
-
-        			break;
-
-     		case Menu::A_STAR_MISPLACED_TILE:
-
-        			puzzleSolver.RunMisplacedTile(menu.GetPuzzle());
-
-        			break;
-
-     		default:
-
-        			break;
-
-  	};
-
-  	menu.PromptForExit();
-
-   }while(!menu.ExitSelected());
-
-   return 0;
-
-}
-
-### PuzzleSolver.h ( Relevant partitions only) 
-
-class PuzzleSolver{
-
-   public:
-
-  	// Constructor / Destructor
-
-  	PuzzleSolver(){}
-
-  	~PuzzleSolver(){}
-
-  	// Puzzle Solving Algorithms
-
-  	void RunManhattanDistance(PuzzleState *puzzle);
-
-  	void RunMisplacedTile(PuzzleState *puzzle);
-
-  	void RunUniformCostSearch(PuzzleState *puzzle);
-
-   private:
-
-  	// Heuristic types
-
-  	enum Heuristic{UNIFORM_COST,MISPLACED_TILE,MANHATTAN_DISTANCE};
-
-  	// Comparitor class
-
-  	struct ComparePuzzle{
-
-     		bool operator()(const PuzzleState *lhs,const PuzzleState *rhs) {
-
-        			return lhs->GetF() > rhs->GetF();
-
-     		}
-
-  	};
-
-  	// Helper functions
-
-  	void Run(PuzzleState *puzzle,Heuristic heuristic);
-
-  	void EstimateCost(PuzzleState *puzzle,Heuristic heuristic);
-
-  	// Data Structures
-
-  	std::priority_queue<PuzzleState*, std::vector<PuzzleState*>, ComparePuzzle> nodes;
-
-  	// Variables
-
-  	int currentBest;
-
-  	int numberNodesExpanded{0};
-
-  	int maxStoredStates{0};
-
-};
-
-void PuzzleSolver::Run(PuzzleState *puzzle,Heuristic heuristic){
-
-   numberNodesExpanded=0;
-
-   maxStoredStates=0;
-
-   EstimateCost(puzzle,heuristic);
-
-   nodes.push(puzzle);
-
-   PuzzleState *current_node;
-
-   while(1){
-
-  	current_node = nodes.top();
-
-  	nodes.pop();
-
-  	// Check for diamater (No solution)
-
-  	if(current_node->GetG() > 31){
-
-     		std::cout<<"This problem has no solution!\n";
-
-     		break;
-
-  	}
-
-  	// Check for goal state
-
-  	if(current_node->IsGoalState()){
-
-     		std::cout<<"Goal State Reached!!\n";
-
-     		current_node->Print();
-
-     		std::cout<<"Solved in "<<current_node->GetG()<<" steps!\n";
-
-     		std::cout<<"Number of nodes expanded: "<<numberNodesExpanded<<std::endl;
-
-     		std::cout<<"Max size of queue: "<<maxStoredStates<<std::endl;
-
-     		// empty queue
-
-     		while(!nodes.empty()){
-
-        			nodes.pop();
-
-     		}
-
-     		return;
-
-  	}else{
-
-     	// If not initial state
-
-     		if(current_node->GetG() != 0){
-
-        			std::cout<<"The best state to expand with a g(n) = "<<current_node->GetG()
-
-                 		<<" and h(n) = "<<current_node->GetH()<<std::endl;
-
-     		}else{
-
-        			std::cout<<"Expanding Node\n";
-
-     		}
-
-     		numberNodesExpanded++;
-
-     		current_node->Print();
-
-     		// Expand new state
-
-     		PuzzleState *new_state;
-
-     		for(int i=0;i<4;++i){
-
-        			new_state = current_node->Expand(i);
-
-        			if(new_state != NULL){
-
-           				EstimateCost(new_state,heuristic);
-
-           				nodes.push(new_state);
-
-        			}
-
-     		}
-
-     		// Save max size of queue
-
-     		int temp = nodes.size();
-
-     		if(temp>maxStoredStates){ maxStoredStates=temp; }
-
-  	}
-
-   }  
-
-}
 
